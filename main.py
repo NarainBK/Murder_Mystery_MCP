@@ -1,4 +1,3 @@
-# main.py
 import os
 import asyncio
 import sys
@@ -197,7 +196,3 @@ async def accuse(killer: str, weapon: str, motive: str) -> GameTurnResult:
         current_location=game_state["player_location"],
         game_over=game_state["game_over"]
     )
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:mcp", host="0.0.0.0", port=PORT, reload=False)
