@@ -70,13 +70,13 @@ class GameTurnResult(BaseModel):
     current_location: str = Field(description="The player's current location.")
     game_over: bool = Field(description="Is the game over?")
 
-mcp = FastMCP(
+app = FastMCP(
     name="MurderMysteryGame",
     instructions="A server that runs a murder mystery game. Use tools like 'go', 'examine', 'interrogate', 'collect', 'accuse', and 'validate'."
 )
 
 # Game Tools 
-@mcp.tool(description="A required tool for Puch AI to validate the server owner.")
+@app.tool(description="A required tool for Puch AI to validate the server owner.")
 async def validate() -> str:
     """
     Puch AI calls this tool to verify the server.
@@ -88,7 +88,7 @@ async def validate() -> str:
         
     return MY_WHATSAPP_NUMBER
 
-@mcp.tool(description="Starts a new mystery and describes the crime scene.")
+@app.tool(description="Starts a new mystery and describes the crime scene.")
 async def start_game() -> GameTurnResult:
     """Resets the game to its initial state."""
     game_state["player_location"] = "foyer"
@@ -103,7 +103,7 @@ async def start_game() -> GameTurnResult:
         game_over=game_state["game_over"]
     )
 
-@mcp.tool(description="Moves the player in a specified direction (north, south, east, west).")
+@app.tool(description="Moves the player in a specified direction (north, south, east, west).")
 async def go(direction: Literal["north", "south", "east", "west"]) -> GameTurnResult:
     location = game_state["player_location"]
     room = crime_scene[location]
@@ -120,7 +120,7 @@ async def go(direction: Literal["north", "south", "east", "west"]) -> GameTurnRe
         game_over=game_state["game_over"]
     )
 
-@mcp.tool(description="Examines the current room or a specific object/person in it.")
+@app.tool(description="Examines the current room or a specific object/person in it.")
 async def examine(target: str) -> GameTurnResult:
     location = game_state["player_location"]
     room = crime_scene[location]
@@ -147,7 +147,7 @@ async def examine(target: str) -> GameTurnResult:
         game_over=game_state["game_over"]
     )
 
-@mcp.tool(description="Collects a specific clue and adds it to your notebook.")
+@app.tool(description="Collects a specific clue and adds it to your notebook.")
 async def collect(clue: str) -> GameTurnResult:
     location = game_state["player_location"]
     if clue == "letter" and "desk" in crime_scene[location]["items"]:
@@ -164,7 +164,7 @@ async def collect(clue: str) -> GameTurnResult:
         game_over=game_state["game_over"]
     )
 
-@mcp.tool(description="Interrogates a suspect in the current room.")
+@app.tool(description="Interrogates a suspect in the current room.")
 async def interrogate(suspect_name: Literal["Lady Victoria", "Mr. Giles"]) -> GameTurnResult:
     location = game_state["player_location"]
     room = crime_scene[location]
@@ -180,7 +180,7 @@ async def interrogate(suspect_name: Literal["Lady Victoria", "Mr. Giles"]) -> Ga
         game_over=game_state["game_over"]
     )
 
-@mcp.tool(description="Make a final accusation to solve the crime.")
+@app.tool(description="Make a final accusation to solve the crime.")
 async def accuse(killer: str, weapon: str, motive: str) -> GameTurnResult:
     truth = game_state["truth"]
     if killer == truth["killer"] and weapon == truth["weapon"] and motive == truth["motive"]:
