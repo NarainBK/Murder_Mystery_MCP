@@ -88,6 +88,14 @@ async def validate() -> str:
         
     return MY_WHATSAPP_NUMBER
 
+@app.tool(description="Provides information about this MCP server.")
+async def about() -> dict:
+    """Returns the name and a description of the game server."""
+    return {
+        "name": app.name,
+        "description": "An interactive murder mystery game where you solve the murder of Lord Alistair Blackwood."
+    }
+
 @app.tool(description="Starts a new mystery and describes the crime scene.")
 async def start_game() -> GameTurnResult:
     """Resets the game to its initial state."""
